@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>pass</title>
+
+</head>
+
+<body>
+
+<h1> average of rating: {{s}}</h1>
+
+<h1>sentiment : {{my_review}}</h1>
+
+<h1>average review: {{y}}</h1>
+
+</body>
+
+</html>
