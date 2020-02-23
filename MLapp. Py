@@ -1,0 +1,151 @@
+import pandas as pd
+
+import gzip
+
+import matplotlib.pyplot as plt
+
+import numpy as np
+
+from textblob import TextBlob
+
+from flask import Flask, render_template ,request
+
+app=Flask(__name__)
+
+@app.route('/')
+
+def index():
+
+    return render_template('index.html')
+
+@app.route('/',methods=['POST'])
+
+def getvalue():
+
+    f1=request.form['fk']
+
+    print(f1)
+
+    df = getDF(f1)
+
+    df['polarity'] = df.apply(lambda x: TextBlob(x['reviewText']).sentiment.polarity, axis=1)
+
+    df['subjectivity'] = df.apply(lambda x: TextBlob(x['reviewText']).sentiment.subjectivity, axis=1)
+
+    print(df)
+
+    ratings = []
+
+    for review in parse(f1):
+
+        ratings.append(review['overall'])
+
+        print("Average Ratings")
+
+    print(sum(ratings) / len(ratings))
+
+    y=sum(ratings) / len(ratings)
+
+    li = []
+
+    a = b = c = 0
+
+    li = df['subjectivity']
+
+    for i in range(len(li)):
+
+        if (li[i] < 0.4):
+
+            a += li[i]
+
+        elif (li[i] >= 0.4 and li[i] <= 0.6):
+
+            b += li[i]
+
+        else:
+
+            c += li[i]
+
+    s = 0
+
+    for i in range(len(li)):
+
+        s += li[i]
+
+    s = s / len(li)
+
+    print(" Review")
+
+    print(s)
+
+    my_review=""
+
+    if (s < 0.4):
+
+        my_review="-ve"
+
+    elif (s >= 0.4 and s <= 0.6):
+
+        my_review="neutral"
+
+    else:
+
+        my_review="+ve"
+
+    labels = ['negative', 'neutral', 'positive']
+
+    sizes = [a, b, c]
+
+    colors = ['gold', 'lightcoral', 'lightskyblue']
+
+    explode = (0.1, 0, 0)  # explode 1st slice
+
+    # Plot
+
+    plt.pie(sizes, explode=explode, labels=labels, colors=colors,
+
+            autopct='%1.1f%%', shadow=True, startangle=140)
+
+    plt.axis('equal')
+
+    plt.show()
+
+    plt.hist(ratings)
+
+    plt.xlabel(sum(ratings) / len(ratings))
+
+    plt.show()
+
+    #db= request.form['db']
+
+    #name = request.form['name']
+
+    #print(age,db,name)
+
+    return render_template('pass.html',s=s,my_review=my_review,y=y)
+
+def parse(path):
+
+  g = gzip.open(path, 'rb')
+
+  for l in g:
+
+    yield eval(l)
+
+def getDF(path):
+
+  i = 0
+
+  df = {}
+
+  for d in parse(path):
+
+    df[i] = d
+
+    i += 1
+
+  return pd.DataFrame.from_dict(df, orient='index')
+
+if __name__=='__main__':
+
+    app.run(debug=True)
