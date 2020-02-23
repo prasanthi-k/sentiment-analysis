@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Title</title>
+
+    <h1 align="center"> PREDICT YOUR PRODUCT REVIEW </h1>
+
+</head>
+
+<body>
+
+    <form name="passdata" action="." method="post">
+
+        <br>
+
+        <input type="file" name="fk" value="file upload">
+
+        <br>
+
+        <br>
+
+        <input type="submit" value="predict">
+
+    </form>
+
+</body>
+
+</html>
